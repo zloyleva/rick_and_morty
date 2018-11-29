@@ -1,47 +1,36 @@
 import React from 'react';
-import './style.css';
+import {CardItem} from "../CardItem";
+import PropTypes from "prop-types";
+import {EmptyData} from "../EmptyData";
 
 export class Cards extends React.Component{
 
-	createHtml = (data,index) => {
-		return (
-			<article className="card mx-1 my-2 CharacterCard__Wrapper" key={index}>
-				<div className="CharacterCard__ImgWrapper">
-					<div className="card-image">
-						<img src={data.image} alt={data.name}/>
-					</div>
-					<div className="CharacterCard__Title"><h2
-						className="CharacterCard__Name">{data.name}</h2><p
-						className="CharacterCard__Description">id: {data.id} - created a year ago</p></div>
-				</div>
-				<div className="CharacterCard__InfoWrapper">
-					<div className="CharacterCard__TextWrapper">
-						<span>STATUS</span>
-						<p>{data.status}</p>
-					</div>
-					<div className="CharacterCard__TextWrapper">
-						<span>SPECIES</span>
-						<p>{data.species}</p>
-					</div>
-					<div className="CharacterCard__TextWrapper">
-						<span>GENDER</span>
-						<p>{data.gender}</p>
-					</div>
-					<div className="CharacterCard__TextWrapper">
-						<span>ORIGIN</span>
-						<p>{data.origin.name}</p>
-					</div>
-					<div className="CharacterCard__TextWrapper">
-						<span>LAST LOCATION</span>
-						<p>{data.location.name}</p>
-					</div>
-				</div>
-			</article>
-		);
+	static propTypes = {
+		personages: PropTypes.array.isRequired
+	};
+
+	constructor(props){
+		super(props);
+		this.state = {
+			personages: []
+		};
+	}
+
+	componentWillReceiveProps(nextProps) {
+		console.log("componentWillReceiveProps");
+		this.setState((state, props) => {
+			return {...{}, ...{personages: props.personages}};
+		});
+	}
+
+	getHtml =() => {
+		const {personages} = this.state;
+		return (personages.length === 0)?<EmptyData />:personages.map((el,index)=><CardItem data={el} key={index}/>);
 	};
 
 	render = () => {
-		return this.props.personages.map((el,index)=>this.createHtml(el,index));
+		//todo add preLoader
+		return this.getHtml();
 	}
 
 }
